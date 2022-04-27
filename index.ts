@@ -28,13 +28,16 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-import somes from 'somes';
 import Store, {Descriptors} from 'somes/store';
 import path from 'somes/path';
 import {Signer} from 'somes/request';
 import { sha256 } from 'somes/hash';
 import buffer, { Buffer } from 'somes/buffer';
 import * as crypto_tx from 'crypto-tx';
+
+interface Dict<T = any> {
+	[key: string]: T;
+}
 
 export class DefaultSigner implements Signer {
 	readonly authName: string;
