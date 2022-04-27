@@ -1,6 +1,6 @@
 {
 	"name": "hcstore",
-	"version": "0.1.0",
+	"version": "0.1.1",
 	"description": "hard-chain sdk",
 	"main": "index.js",
 	"types": "index.d.ts",
@@ -11,6 +11,6 @@
 	},
 	"dependencies": {
 		"crypto-tx": "~0.5.1",
-		"somes": "~0.11.5"
+		"somes": "~0.11.6"
 	}
 }
