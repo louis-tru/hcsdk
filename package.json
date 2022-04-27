@@ -5,6 +5,10 @@
 	"main": "index.js",
 	"types": "index.d.ts",
 	"author": "chuxuewen@hard-chain.com",
+	"scripts": {
+		"_prepare": "npm run build",
+		"build": "tsc && cp LICENSE *.md *.json out/hcsdk"
+	},
 	"dependencies": {
 		"crypto-tx": "~0.5.1",
 		"somes": "~0.11.5"
