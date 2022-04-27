@@ -1,0 +1,12 @@
+{
+	"name": "hcsdk",
+	"version": "0.1.0",
+	"description": "hard-chain sdk",
+	"main": "index.js",
+	"types": "index.d.ts",
+	"author": "chuxuewen@hard-chain.com",
+	"dependencies": {
+		"crypto-tx": "~0.5.1",
+		"somes": "~0.11.5"
+	}
+}
