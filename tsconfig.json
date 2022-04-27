@@ -5,7 +5,7 @@
 		"target": "ES2018",
 		"moduleResolution": "node",
 		"sourceMap": false,
-		"outDir": "out/hcsdk",
+		"outDir": "out/hcstore",
 		"rootDir": ".",
 		"baseUrl": ".",
 		"declaration": true,

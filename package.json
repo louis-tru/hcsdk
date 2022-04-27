@@ -1,5 +1,5 @@
 {
-	"name": "hcsdk",
+	"name": "hcstore",
 	"version": "0.1.0",
 	"description": "hard-chain sdk",
 	"main": "index.js",
@@ -7,7 +7,7 @@
 	"author": "chuxuewen@hard-chain.com",
 	"scripts": {
 		"_prepare": "npm run build",
-		"build": "tsc && cp package.json out/hcsdk"
+		"build": "tsc && cp package.json out/hcstore"
 	},
 	"dependencies": {
 		"crypto-tx": "~0.5.1",
