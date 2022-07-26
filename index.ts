@@ -34,24 +34,27 @@ import path from 'somes/path';
 import {Signer} from 'somes/request';
 import { sha256 } from 'somes/hash';
 import buffer, { Buffer } from 'somes/buffer';
-import * as crypto_tx from 'crypto-tx';
+import * as cryptoTx from 'crypto-tx';
+
+export const defaultShareKey = 'a4dd53f2fefde37c07ac4824cf7085439633e1a357daacc3aaa16418275a9e40';
 
 export class DefaultSigner implements Signer {
 	readonly authName: string;
 	readonly privKey: Buffer;
+	readonly shareKey: string;
 
-	constructor(user: string, keyHex: string) {
+	constructor(user: string, keyHex: string, shareKey: string = defaultShareKey) {
 		this.authName = user;
 		this.privKey = buffer.from(keyHex, 'hex');
+		this.shareKey = shareKey;
 	}
 
 	sign(path: string, data: string) {
 		var st = Date.now();
-		var key = "a4dd53f2fefde37c07ac4824cf7085439633e1a357daacc3aaa16418275a9e40";
-		var msg = (data) + st + key;
+		var msg = (data) + st + this.shareKey;
 		var hash = sha256(msg);
 
-		var signature = crypto_tx.sign(hash, this.privKey);
+		var signature = cryptoTx.sign(hash, this.privKey);
 		var sign = buffer.concat([signature.signature, [signature.recovery]]).toString('base64');
 
 		return {
@@ -62,12 +65,17 @@ export class DefaultSigner implements Signer {
 	}
 }
 
-export async function make({
-	url = 'http://127.0.0.1:8091/service-api', signer, name, store, descriptors }: {
-	url?: string; signer?: Signer; name?: string; store?: Store; descriptors?: Dict<Descriptors>,
-}) {
-	var _store = store || new Store(name);
-	if (_store.isLoaded) return _store;
+export interface MakeArgs {
+	url?: string;
+	signer?: Signer;
+	store?: Store;
+	descriptors?: Dict<Descriptors>,
+}
+
+export async function make({ url = 'http://127.0.0.1:8091/service-api', signer, store, descriptors }: MakeArgs) {
+	var _store = store || new Store();
+	if (_store.isLoaded)
+		return _store;
 	var urlObj = new path.URL(url);
 	await _store.initialize({
 		host: urlObj.hostname, 
