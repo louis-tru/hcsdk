@@ -13,7 +13,11 @@ var _PrivateKey: IBuffer | null = null;
 var _AuthName: string = '';
 
 async function initPrivateKey(privateKey?: string) {
-	somes.assert(!_PrivateKey);
+	if (_PrivateKey) {
+		if (!privateKey) return false;
+		let key = buffer.from(privateKey, 'hex');
+		if (key.compare(_PrivateKey) == 0) return false;
+	}
 	if (privateKey) {
 		_PrivateKey = buffer.from(privateKey, 'hex');
 	} else {
@@ -25,6 +29,8 @@ async function initPrivateKey(privateKey?: string) {
 		_PrivateKey = hash.sha256(key + 'a1048d9bb6a4e985342b240b5dd63176b27f1bac62fa268699ea6b55f9ff301a');
 	}
 	_AuthName = somes.hash(publicKey());
+
+	return true
 }
 
 function getPrivateKey() {
@@ -40,7 +46,7 @@ export function publicKey() {
 	return '0x' + cryptoTx.getPublic(getPrivateKey(), true).toString('hex');
 }
 
-export async function initialize(url: string, privateKey?: string) {
+export async function initialize(url: string, privateKey?: string, ref?: string) {
 	await initPrivateKey(privateKey);
 
 	const {core} = await make({
@@ -50,7 +56,20 @@ export async function initialize(url: string, privateKey?: string) {
 
 	var user = await core.user.methods.authUser();
 	if (!user) {
-		await core.user.methods.register({ name: _AuthName, key: publicKey() });
+		await core.user.methods.register({ name: _AuthName, key: publicKey(), ref });
+	}
+}
+
+export async function setPrivateKey(privateKey: string, ref?: string) {
+	somes.assert(store.isLoaded, 'Initialize first');
+	if (await initPrivateKey(privateKey)) {
+		store.setSigner(new DefaultSigner(_AuthName, getPrivateKey().toString('hex')));
+		store.conv?.close(); // reopen
+
+		var user = await store.core.user.methods.authUser();
+		if (!user) {
+			await store.core.user.methods.register({ name: _AuthName, key: publicKey(), ref });
+		}
 	}
 }
 
